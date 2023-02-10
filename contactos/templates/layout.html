@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ vista }} | Agenda</title>
+
+    <link rel="stylesheet" href="{% static 'bootstrap/style.css' %}">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <nav class="navbar navbar-dark fixed-top bg-dark">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="#">Agenda | {{ vista }} </a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        {% block content %}
+        
+        {% endblock %}
+    </div>
+<script src="{% static 'bootstrap/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js' %}" defer></script>
+</body>
+</html>
