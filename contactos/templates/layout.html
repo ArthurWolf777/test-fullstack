@@ -11,20 +11,26 @@
     <link rel="stylesheet" href="{% static 'bootstrap/style.css' %}">
 </head>
 <body>
-    <div class="container-fluid">
         <div class="row">
-            <div class="col">
-                <nav class="navbar navbar-dark fixed-top bg-dark">
+            <div class="col-12">
+                <nav class="navbar navbar-dark bg-dark">
                     <div class="container-fluid">
-                        <a class="navbar-brand" href="#">Agenda | {{ vista }} </a>
+                        <a class="navbar-brand" href="/">Agenda | {{ vista }} </a>
                     </div>
                 </nav>
             </div>
         </div>
-        {% block content %}
-        
-        {% endblock %}
+    <div class="container">
+        <br>
+        <div class="row justify-content-center bd-example-snippet">
+            <div class="col-4-md">
+                {% block content %}
+                
+                {% endblock %}
+            </div>
+        </div>
     </div>
+    <script src="http://code.jquery.com/jquery-latest.js" defer></script>
 <script src="{% static 'bootstrap/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js' %}" defer></script>
 </body>
 </html>

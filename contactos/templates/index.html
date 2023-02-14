@@ -2,12 +2,18 @@
 
 {% block content %}
     <div class="row">
-        <div class="col"> <br> <br> <br> </div>
-    </div>
-
-    <div class="row">
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <a class="btn btn-primary" href="#" role="button">Añadir Nuevo</a>
+        <div class="d-grid gap-2 d-flex justify-content-end">
+            <a class="btn btn-primary" href="/nuevo-contacto/" role="button">Añadir Nuevo</a>
         </div>
     </div>
+
+    <diiv class="row">
+        {% for contacto in contactos %}
+        <div class="contacto-container">
+            <p class="update">{{ contacto.updated_at}}</p>
+            <li class="contacto"><a href="/contacto/editar/{{contacto.id}}/">{{ contacto.name }} {{ contacto.lastname }} </a></li>
+            <button class="edit-button"><a href="/contacto/editar/{{contacto.id}}/">editar</a></button> <button class="delete-button"><a href="/delete/{{contacto.id}}/">eliminar</a></button>
+        </div>
+    {% endfor %}
+    </diiv>
 {% endblock %}

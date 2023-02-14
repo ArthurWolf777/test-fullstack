@@ -21,4 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', contactos.views.index, name='index'),
     path('inicio/', contactos.views.index, name='inicio'),
+    path('nuevo-contacto/', contactos.views.New_Contact, name='nuevo'),
+    path('guardar/', contactos.views.save_contact, name='save'),
+    path('contacto/editar/<int:id>/', contactos.views.edit_contact, name='edit'),
+    path('delete/<int:id>/', contactos.views.delete_contact, name="delete"),
 ]
