@@ -14,11 +14,15 @@ def index(request):
 
 
 def New_Contact(request):
-    vista = 'Nuevo Contacto'
+
     new_contact_form = NewContactForm()
-    return render(request, 'new_contact.html', {
-        'vista' : vista,
-        'form': new_contact_form})
+
+    context = {
+        'vista' : 'Nuevo contacto',
+        'form': new_contact_form
+        }
+    
+    return render(request, 'new_contact.html', context)
 
 
 
@@ -26,99 +30,87 @@ def save_contact(request):
 
     if request.method == 'POST':
 
-        name = request.POST['name']
-        lastname = request.POST['lastname']
-        photo = request.POST['photo']
-        birthday = request.POST['birthday']
+        form = NewContactForm(request.POST)
 
-        contact = Contact(
-            name = name,
-            lastname = lastname,
-            photo = photo,
-            birthday = birthday
-        )
+        if form.is_valid():
+            
+            form.save()
 
-        contact.save()
+            created = Contact.objects.order_by('updated_at').last()
 
-        created = Contact.objects.order_by('updated_at').last()
+            primary_key = created.id
 
-        primary_key = created.id
+            print(created)
+            print(primary_key)
+            return  redirect('edit', id=primary_key)
 
-        print(created)
-        print(primary_key)
-        return redirect('edit', id=primary_key)
-    
 
 def edit_contact(request, id):
-
     contact = Contact.objects.get(pk=id)
-
-    contact.name
-    contact.lastname
-    contact.photo
-    contact.birthday
+    contact_form = NewContactForm(instance=contact)
     primary_key = contact.id
+
+    try:
+        phone = Phone.objects.get(pk=id)
+        phone_form = PhoneForm(instance=phone)
+        phone_form_post = PhoneForm(request.POST, instance=contact)
+        phone_exist = True
+
+    except Phone.DoesNotExist:
+        phone_form = PhoneForm(instance=contact)
+        phone_form_post = PhoneForm(request.POST)
+        phone_exist = False
+
+    try:
+        address = Address.objects.get(contact_id=contact.id)
+        address_form = AddressForm(instance=address)
+        address_form_post = AddressForm(request.POST, instance=address)
+        address_exist = True
+
+    except Address.DoesNotExist:
+        address_form = AddressForm(initial={'contact':contact})
+        address_form_post = AddressForm(request.POST)
+        address_exist = False
+
+
+    context = {
+        'addressform': address_form,
+        'form': contact_form,
+        'phoneform': phone_form,
+        'vista': 'Editar',
+        'key': primary_key
+    }
+
 
     if request.method == 'POST':
 
-        phone_form_in = PhoneForm(request.POST)
-        address_form_in = AddressForm(request.POST)
+        contact_form = NewContactForm(request.POST, instance=contact)
+        address_form_post
+        phone_form_post
 
-        if  phone_form_in.is_valid():
+        if contact_form.is_valid():
+            contact_form.save()
+            print('Se editó el contacto')
+            return redirect('edit', id=primary_key)
 
-            phone_type_options = request.POST['types']
-            alias = request.POST['alias']
-            number = request.POST['number']
+        elif address_form_post.is_valid():
+            address_form_post.save()
+
+            print('Se creó o editó la dirección')
+            return redirect('edit', id=primary_key)
+
+        elif phone_form_post.is_valid():
+            phone_form_post.save()
             
-            phone = Phone(
-                phone_type_options = phone_type_options,
-                alias = alias,
-                number = number,
-                contact_id = primary_key
+            print('Se editó el teléfono')
+            return redirect('edit', id=primary_key)
 
-            )
-
-            phone.save()
-
-            return redirect('index')
-        
-        elif address_form_in.is_valid():
-            
-            street = request.POST['street']
-            exterior_number = request.POST['exterior_number']
-            internal_number = request.POST['internal_number']
-            neighborhood = request.POST['neighborhood']
-            municipality = request.POST['municipality']
-            state = request.POST['state']
-            references = request.POST['references']
-
-            address = Address(
-                street = street,
-                exterior_number = exterior_number,
-                internal_number = internal_number,
-                neighborhood = neighborhood,
-                municipality = municipality,
-                state = state,
-                references = references,
-                contact_id = primary_key
-            )
-
-            address.save()
-
+        else:
             return redirect('index')
 
-        return redirect('index')
+    else:
+        return render(request, 'edit_contact.html', context)
 
-    vista = 'Editar'
-    addressform = AddressForm()
-    contact_form = NewContactForm()
-    phone_form = PhoneForm()
-
-    return render(request, 'edit_contact.html', {
-        'addressform' : addressform,
-        'form' : contact_form,
-        'phoneform' : phone_form,
-        'vista' : vista})
 
 
 def delete_contact(request, id):

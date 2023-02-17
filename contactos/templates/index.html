@@ -1,19 +1,24 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+
     <div class="row">
         <div class="d-grid gap-2 d-flex justify-content-end">
             <a class="btn btn-primary" href="/nuevo-contacto/" role="button">Añadir Nuevo</a>
         </div>
     </div>
-
-    <diiv class="row">
+    <br>
+    <div class="row">
         {% for contacto in contactos %}
-        <div class="contacto-container">
-            <p class="update">{{ contacto.updated_at}}</p>
-            <li class="contacto"><a href="/contacto/editar/{{contacto.id}}/">{{ contacto.name }} {{ contacto.lastname }} </a></li>
-            <button class="edit-button"><a href="/contacto/editar/{{contacto.id}}/">editar</a></button> <button class="delete-button"><a href="/delete/{{contacto.id}}/">eliminar</a></button>
-        </div>
-    {% endfor %}
-    </diiv>
+                <div class="card">
+                    <p class="text-end">{{ contacto.updated_at }}</p>
+                    <a class="text-decoration-none fw-bolder text-uppercase" href="/contacto/editar/{{contacto.id}}/">{{ contacto.name }} {{ contacto.lastname }} </a>
+                    <div class="d-grid gap-2 d-flex justify-content-start">
+                        <a href="/contacto/editar/{{contacto.id}}/" class="btn btn-secondary btn-sm" role="button">editar</a>
+                        <a href="/delete/{{contacto.id}}/"  class="btn btn-danger btn-sm" role="button">eliminar</a>
+                    </div>
+                </div>
+        {% endfor %}
+    </div>
+    <br>
 {% endblock %}
