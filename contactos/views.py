@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect
 from .forms import NewContactForm, AddressForm, PhoneForm
 from contactos.models import Contact, Address, Phone
+from django.forms import formset_factory
 # Create your views here.
 
 def index(request):
@@ -50,17 +51,21 @@ def edit_contact(request, id):
     contact_form = NewContactForm(instance=contact)
     primary_key = contact.id
 
+# EXCEPCION PARA TELÉFONO
     try:
-        phone = Phone.objects.get(pk=id)
+        phone = Phone.objects.get(contact_id=contact.id)
         phone_form = PhoneForm(instance=phone)
-        phone_form_post = PhoneForm(request.POST, instance=contact)
+        phone_form_post = PhoneForm(request.POST, instance=phone)
         phone_exist = True
 
     except Phone.DoesNotExist:
-        phone_form = PhoneForm(instance=contact)
-        phone_form_post = PhoneForm(request.POST)
+        phone_form = None
+        phone_form_post = False
+        #phone_form = PhoneForm(initial={'contact':contact})
+        #phone_form_post = PhoneForm(request.POST)
         phone_exist = False
 
+# EXCEPCION PARA DIRECCIÓN
     try:
         address = Address.objects.get(contact_id=contact.id)
         address_form = AddressForm(instance=address)
@@ -88,21 +93,13 @@ def edit_contact(request, id):
         address_form_post
         phone_form_post
 
-        if contact_form.is_valid():
+        if contact_form.is_valid() or address_form_post.is_valid() or phone_form_post.is_valid():
             contact_form.save()
             print('Se editó el contacto')
-            return redirect('edit', id=primary_key)
 
-        elif address_form_post.is_valid():
             address_form_post.save()
 
             print('Se creó o editó la dirección')
-            return redirect('edit', id=primary_key)
-
-        elif phone_form_post.is_valid():
-            phone_form_post.save()
-            
-            print('Se editó el teléfono')
             return redirect('edit', id=primary_key)
 
         else:

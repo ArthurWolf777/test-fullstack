@@ -28,4 +28,3 @@ class PhoneForm(ModelForm):
             'contact': forms.HiddenInput()
         }
 
-phone_form_set = formset_factory(PhoneForm)
